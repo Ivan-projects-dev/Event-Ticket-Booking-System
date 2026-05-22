@@ -1,13 +1,13 @@
 package service;
+
 import domain.Booking;
 import domain.BookingStatus;
 import domain.BookingTicket;
 import domain.Ticket;
-import domain.TicketStatus;
 import persistence.BookingRepository;
 import persistence.BookingTicketRepository;
 import persistence.TicketRepository;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class BookingService {
@@ -15,45 +15,50 @@ public class BookingService {
     private final BookingTicketRepository bookingTicketRepository = new BookingTicketRepository();
     private final TicketRepository ticketRepository = new TicketRepository();
 
-    public Booking createBooking(int userId, List<Integer> ticketIds) {
+    public Booking createBooking(String userId, List<String> ticketIds) {
         if (ticketIds == null || ticketIds.isEmpty()) {
             throw new IllegalArgumentException("At least one ticket must be selected.");
         }
+
         // Verify all tickets exist and are available
-        for (int ticketId : ticketIds) {
+        for (String ticketId : ticketIds) {
             Ticket ticket = ticketRepository.findById(ticketId);
 
             if (ticket == null) {
                 throw new IllegalArgumentException("Ticket not found: " + ticketId);
             }
-            if (ticket.getStatus() != TicketStatus.AVAILABLE) {
+
+            if (!ticket.isAvailability()) {
                 throw new IllegalStateException("Ticket is not available: " + ticketId);
             }
         }
 
         // Calculate total amount
         double total = 0;
-        for (int ticketId : ticketIds) {
+        for (String ticketId : ticketIds) {
             total += ticketRepository.findById(ticketId).getPrice();
         }
+
         // Create the booking
-        String today = LocalDate.now().toString(),
-            confirmationCode = "BOOK-" + System.currentTimeMillis();
-        Booking booking = new Booking(0, userId, today, total, BookingStatus.PENDING, confirmationCode);
+        String now = LocalDateTime.now().toString();
+        String confirmationCode = "BOOK-" + System.currentTimeMillis();
+        Booking booking = new Booking(null, userId, now, total, BookingStatus.PENDING, confirmationCode, now);
         bookingRepository.save(booking);
-        // Link tickets to booking and reserve them
-        for (int ticketId : ticketIds) {
+
+        // Link tickets to booking and mark them unavailable
+        for (String ticketId : ticketIds) {
             bookingTicketRepository.save(new BookingTicket(booking.getId(), ticketId));
-            ticketRepository.updateStatus(ticketId, TicketStatus.RESERVED);
+            ticketRepository.setAvailability(ticketId, false);
         }
+
         return booking;
     }
 
-    public Booking findById(int id) {
+    public Booking findById(String id) {
         return bookingRepository.findById(id);
     }
 
-    public List<Booking> findByUserId(int userId) {
+    public List<Booking> findByUserId(String userId) {
         return bookingRepository.findByUserId(userId);
     }
 

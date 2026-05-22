@@ -1,4 +1,5 @@
 package persistence;
+
 import domain.User;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class UserRepository extends GenericJsonRepository<User> {
                 return user;
             }
         }
+
         return null;
     }
 }

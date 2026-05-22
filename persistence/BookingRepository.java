@@ -11,9 +11,9 @@ public class BookingRepository extends GenericJsonRepository<Booking> {
         super(FILE_PATH, Booking.class);
     }
 
-    public List<Booking> findByUserId(int userId) {
+    public List<Booking> findByUserId(String userId) {
         List<Booking> bookings = findAll();
-        return bookings.stream().filter(booking -> booking.getUserId() == userId).collect(Collectors.toList());
+        return bookings.stream().filter(booking -> userId.equals(booking.getUserId())).collect(Collectors.toList());
     }
 
     public List<Booking> findByStatus(BookingStatus status) {
@@ -21,7 +21,7 @@ public class BookingRepository extends GenericJsonRepository<Booking> {
         return bookings.stream().filter(booking -> booking.getStatus() == status).collect(Collectors.toList());
     }
 
-    public void updateStatus(int bookingId, BookingStatus status) {
+    public void updateStatus(String bookingId, BookingStatus status) {
         Booking booking = findById(bookingId);
 
         if (booking == null) {

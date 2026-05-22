@@ -9,9 +9,9 @@ public class EventRepository extends GenericJsonRepository<Event> {
         super(FILE_PATH, Event.class);
     }
 
-    public List<Event> findByAdminId(int adminId) {
+    public List<Event> findByAdminId(String adminId) {
         List<Event> events = findAll();
-        return events.stream().filter(event -> event.getAdminId() == adminId).toList();
+        return events.stream().filter(event -> adminId.equals(event.getAdminId())).toList();
     }
 
     public List<Event> findByCategory(String category) {

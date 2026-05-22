@@ -1,19 +1,20 @@
-package domain;
+package dto;
+import domain.Payment;
+import domain.PaymentStatus;
 
-public class Payment implements Identifiable {
+public class PaymentDto {
     private String id;
-    private String bookingId;    // FK → bookings.booking_id
+    private String bookingId;
     private double amount;
-    private String method;       // maps to method in DB (was paymentMethod)
+    private String method;
     private String paymentDate;
     private PaymentStatus status;
     private String createdAt;
 
-    public Payment() {
+    public PaymentDto() {
     }
 
-    public Payment(String id, String bookingId, double amount, String method,
-                   String paymentDate, PaymentStatus status, String createdAt) {
+    public PaymentDto(String id, String bookingId, double amount, String method, String paymentDate, PaymentStatus status, String createdAt) {
         this.id = id;
         this.bookingId = bookingId;
         this.amount = amount;
@@ -23,6 +24,18 @@ public class Payment implements Identifiable {
         this.createdAt = createdAt;
     }
 
+    public static PaymentDto from(Payment payment) {
+        return new PaymentDto(
+            payment.getId(), 
+            payment.getBookingId(), 
+            payment.getAmount(), 
+            payment.getMethod(), 
+            payment.getPaymentDate(), 
+            payment.getStatus(), 
+            payment.getCreatedAt()
+        );
+    }
+
     public String getId() {
         return id;
     }
@@ -30,7 +43,6 @@ public class Payment implements Identifiable {
     public void setId(String id) {
         this.id = id;
     }
-
 
     public String getBookingId() {
         return bookingId;

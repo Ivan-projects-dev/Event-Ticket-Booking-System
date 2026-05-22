@@ -10,28 +10,18 @@ public class NotificationRepository extends GenericJsonRepository<Notification> 
         super(FILE_PATH, Notification.class);
     }
 
-    public List<Notification> findByUserId(int userId) {
+    public List<Notification> findByUserId(String userId) {
         List<Notification> notifications = findAll();
-        return notifications.stream().filter(notification -> notification.getUserId() == userId).collect(Collectors.toList());
+        return notifications.stream().filter(n -> userId.equals(n.getUserId())).collect(Collectors.toList());
     }
 
-    public List<Notification> findByBookingId(int bookingId) {
+    public List<Notification> findByBookingId(String bookingId) {
         List<Notification> notifications = findAll();
-        return notifications.stream().filter(notification -> notification.getBookingId() == bookingId).collect(Collectors.toList());
+        return notifications.stream().filter(n -> bookingId.equals(n.getBookingId())).collect(Collectors.toList());
     }
 
-    public List<Notification> findUnreadByUserId(int userId) {
+    public List<Notification> findByType(String type) {
         List<Notification> notifications = findAll();
-        return notifications.stream().filter(notification -> notification.getUserId() == userId).filter(notification -> !notification.isRead()).collect(Collectors.toList());
-    }
-
-    public void markAsRead(int notificationId) {
-        Notification notification = findById(notificationId);
-
-        if (notification == null) {
-            return;
-        }
-        notification.setRead(true);
-        save(notification);
+        return notifications.stream().filter(n -> type.equals(n.getType())).collect(Collectors.toList());
     }
 }

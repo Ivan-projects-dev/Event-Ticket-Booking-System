@@ -1,40 +1,42 @@
 package domain;
 
 public class Booking implements Identifiable {
-    private int id;
-    private int userId;
+    private String id;
+    private String userId;       // FK → users.user_id
     private String bookingDate;
     private double totalAmount;
     private BookingStatus status;
     private String confirmationCode;
+    private String createdAt;
 
     public Booking() {
     }
 
-    public Booking(int id, int userId, String bookingDate, double totalAmount,
-                   BookingStatus status, String confirmationCode) {
+    public Booking(String id, String userId, String bookingDate, double totalAmount,
+                   BookingStatus status, String confirmationCode, String createdAt) {
         this.id = id;
         this.userId = userId;
         this.bookingDate = bookingDate;
         this.totalAmount = totalAmount;
         this.status = status;
         this.confirmationCode = confirmationCode;
+        this.createdAt = createdAt;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -72,5 +74,14 @@ public class Booking implements Identifiable {
 
     public void setConfirmationCode(String confirmationCode) {
         this.confirmationCode = confirmationCode;
+    }
+
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -1,44 +1,46 @@
 package domain;
 
 public class Ticket implements Identifiable {
-    private int id;
-    private int eventId;
+    private String id;
+    private String eventId;     // FK → events.event_id
     private String category;
     private double price;
     private String seatNumber;
-    private TicketStatus status;
+    private boolean availability;
+    private String createdAt;
 
     public Ticket() {
     }
 
-    public Ticket(int id, int eventId, String category, double price,
-                  String seatNumber, TicketStatus status) {
+    public Ticket(String id, String eventId, String category, double price,
+                  String seatNumber, boolean availability, String createdAt) {
         this.id = id;
         this.eventId = eventId;
         this.category = category;
         this.price = price;
         this.seatNumber = seatNumber;
-        this.status = status;
+        this.availability = availability;
+        this.createdAt = createdAt;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
 
-    public int getEventId() {
+    public String getEventId() {
         return eventId;
     }
 
-    public void setEventId(int eventId) {
+    public void setEventId(String eventId) {
         this.eventId = eventId;
     }
 
-    
+
     public String getCategory() {
         return category;
     }
@@ -66,11 +68,20 @@ public class Ticket implements Identifiable {
     }
 
 
-    public TicketStatus getStatus() {
-        return status;
+    public boolean isAvailability() {
+        return availability;
     }
 
-    public void setStatus(TicketStatus status) {
-        this.status = status;
+    public void setAvailability(boolean availability) {
+        this.availability = availability;
+    }
+
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }

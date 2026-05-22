@@ -1,28 +1,28 @@
 package domain;
 
 public class User implements Identifiable {
-    private int id;
+    private String id;
     private String email;
     private String password;
     private String name;
-    private UserRole role;
+    private String createdAt;
 
     public User() {
     }
 
-    public User(int id, String email, String password, String name, UserRole role) {
+    public User(String id, String email, String password, String name, String createdAt) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
-        this.role = role;
+        this.createdAt = createdAt;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -34,7 +34,7 @@ public class User implements Identifiable {
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
 
     public String getPassword() {
         return password;
@@ -53,12 +53,12 @@ public class User implements Identifiable {
         this.name = name;
     }
 
-    
-    public UserRole getRole() {
-        return role;
+
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }

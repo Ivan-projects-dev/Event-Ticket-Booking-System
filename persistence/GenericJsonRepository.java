@@ -1,6 +1,7 @@
 package persistence;
 import domain.Identifiable;
 import java.util.List;
+import java.util.UUID;
 
 public class GenericJsonRepository<T extends Identifiable> {
     private final String filePath;
@@ -15,11 +16,11 @@ public class GenericJsonRepository<T extends Identifiable> {
         return JsonStorage.readList(filePath, clazz);
     }
 
-    public T findById(int id) {
+    public T findById(String id) {
         List<T> items = findAll();
 
         for (T item : items) {
-            if (item.getId() == id) {
+            if (item.getId() != null && item.getId().equals(id)) {
                 return item;
             }
         }
@@ -29,15 +30,15 @@ public class GenericJsonRepository<T extends Identifiable> {
     public void save(T item) {
         List<T> items = findAll();
 
-        if (item.getId() == 0) {
-            item.setId(generateNextId(items));
+        if (item.getId() == null || item.getId().isEmpty()) {
+            item.setId(UUID.randomUUID().toString());
             items.add(item);
         } 
         else {
             boolean updated = false;
 
             for (int i = 0; i < items.size(); i++) {
-                if (items.get(i).getId() == item.getId()) {
+                if (item.getId().equals(items.get(i).getId())) {
                     items.set(i, item);
                     updated = true;
                     break;
@@ -50,24 +51,13 @@ public class GenericJsonRepository<T extends Identifiable> {
         JsonStorage.writeList(filePath, items);
     }
 
-    public void deleteById(int id) {
+    public void deleteById(String id) {
         List<T> items = findAll();
-        items.removeIf(item -> item.getId() == id);
+        items.removeIf(item -> item.getId() != null && item.getId().equals(id));
         JsonStorage.writeList(filePath, items);
     }
 
-    public boolean existsById(int id) {
+    public boolean existsById(String id) {
         return findById(id) != null;
-    }
-
-    private int generateNextId(List<T> items) {
-        int maxId = 0;
-
-        for (T item : items) {
-            if (item.getId() > maxId) {
-                maxId = item.getId();
-            }
-        }
-        return maxId + 1;
     }
 }

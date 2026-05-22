@@ -10,21 +10,21 @@ public class BookingTicketRepository {
         return JsonStorage.readList(FILE_PATH, BookingTicket.class);
     }
 
-    public List<BookingTicket> findByBookingId(int bookingId) {
+    public List<BookingTicket> findByBookingId(String bookingId) {
         List<BookingTicket> records = findAll();
-        return records.stream().filter(bt -> bt.getBookingId() == bookingId).collect(Collectors.toList());
+        return records.stream().filter(bt -> bt.getBookingId() != null && bt.getBookingId().equals(bookingId)).collect(Collectors.toList());
     }
 
-    public List<BookingTicket> findByTicketId(int ticketId) {
+    public List<BookingTicket> findByTicketId(String ticketId) {
         List<BookingTicket> records = findAll();
-        return records.stream().filter(bt -> bt.getTicketId() == ticketId).collect(Collectors.toList());
+        return records.stream().filter(bt -> bt.getTicketId() != null && bt.getTicketId().equals(ticketId)).collect(Collectors.toList());
     }
 
-    public boolean exists(int bookingId, int ticketId) {
+    public boolean exists(String bookingId, String ticketId) {
         List<BookingTicket> records = findAll();
 
         for (BookingTicket bt : records) {
-            if (bt.getBookingId() == bookingId && bt.getTicketId() == ticketId) {
+            if (bookingId.equals(bt.getBookingId()) && ticketId.equals(bt.getTicketId())) {
                 return true;
             }
         }
@@ -40,15 +40,15 @@ public class BookingTicketRepository {
         }
     }
 
-    public void deleteByBookingId(int bookingId) {
+    public void deleteByBookingId(String bookingId) {
         List<BookingTicket> records = findAll();
-        records.removeIf(bt -> bt.getBookingId() == bookingId);
+        records.removeIf(bt -> bookingId.equals(bt.getBookingId()));
         JsonStorage.writeList(FILE_PATH, records);
     }
 
-    public void deleteByTicketId(int ticketId) {
+    public void deleteByTicketId(String ticketId) {
         List<BookingTicket> records = findAll();
-        records.removeIf(bt -> bt.getTicketId() == ticketId);
+        records.removeIf(bt -> ticketId.equals(bt.getTicketId()));
         JsonStorage.writeList(FILE_PATH, records);
     }
 }

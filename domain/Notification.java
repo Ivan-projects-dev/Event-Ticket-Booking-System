@@ -1,50 +1,61 @@
 package domain;
 
 public class Notification implements Identifiable {
-    private int id;
-    private int userId;
-    private int bookingId;
+    private String id;
+    private String userId;      // FK → users.user_id
+    private String bookingId;   // FK → bookings.booking_id
+    private String type;        // e.g. "BOOKING_CONFIRMED", "PAYMENT_SUCCESS"
     private String message;
-    private String date;
-    private boolean read;
+    private String sentDate;
+    private String createdAt;
 
     public Notification() {
     }
 
-    public Notification(int id, int userId, int bookingId, String message,
-                        String date, boolean read) {
+    public Notification(String id, String userId, String bookingId, String type,
+                        String message, String sentDate, String createdAt) {
         this.id = id;
         this.userId = userId;
         this.bookingId = bookingId;
+        this.type = type;
         this.message = message;
-        this.date = date;
-        this.read = read;
+        this.sentDate = sentDate;
+        this.createdAt = createdAt;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
 
-    public int getBookingId() {
+    public String getBookingId() {
         return bookingId;
     }
 
-    public void setBookingId(int bookingId) {
+    public void setBookingId(String bookingId) {
         this.bookingId = bookingId;
+    }
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
 
@@ -57,20 +68,20 @@ public class Notification implements Identifiable {
     }
 
 
-    public String getDate() {
-        return date;
+    public String getSentDate() {
+        return sentDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setSentDate(String sentDate) {
+        this.sentDate = sentDate;
     }
 
 
-    public boolean isRead() {
-        return read;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }

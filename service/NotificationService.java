@@ -1,30 +1,30 @@
 package service;
+
 import domain.Notification;
 import persistence.NotificationRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class NotificationService {
     private final NotificationRepository notificationRepository = new NotificationRepository();
 
-    public Notification createNotification(int userId, int bookingId, String message, String date) {
-        Notification notification = new Notification(0, userId, bookingId, message, date, false);
+    public Notification createNotification(String userId, String bookingId,
+                                           String type, String message) {
+        String now = LocalDateTime.now().toString();
+        Notification notification = new Notification(null, userId, bookingId, type, message, now, now);
         notificationRepository.save(notification);
         return notification;
     }
 
-    public List<Notification> getUnreadByUserId(int userId) {
-        return notificationRepository.findUnreadByUserId(userId);
-    }
-
-    public List<Notification> getByUserId(int userId) {
+    public List<Notification> getByUserId(String userId) {
         return notificationRepository.findByUserId(userId);
     }
 
-    public List<Notification> getByBookingId(int bookingId) {
+    public List<Notification> getByBookingId(String bookingId) {
         return notificationRepository.findByBookingId(bookingId);
     }
 
-    public void markAsRead(int notificationId) {
-        notificationRepository.markAsRead(notificationId);
+    public List<Notification> getByType(String type) {
+        return notificationRepository.findByType(type);
     }
 }

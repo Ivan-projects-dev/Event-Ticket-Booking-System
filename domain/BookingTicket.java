@@ -1,31 +1,31 @@
 package domain;
 
 public class BookingTicket {
-    private int bookingId;
-    private int ticketId;
+    private String bookingId;   // FK → bookings.booking_id
+    private String ticketId;    // FK → tickets.ticket_id
 
     public BookingTicket() {
     }
 
-    public BookingTicket(int bookingId, int ticketId) {
+    public BookingTicket(String bookingId, String ticketId) {
         this.bookingId = bookingId;
         this.ticketId = ticketId;
     }
 
-    public int getBookingId() {
+    public String getBookingId() {
         return bookingId;
     }
 
-    public void setBookingId(int bookingId) {
+    public void setBookingId(String bookingId) {
         this.bookingId = bookingId;
     }
 
 
-    public int getTicketId() {
+    public String getTicketId() {
         return ticketId;
     }
 
-    public void setTicketId(int ticketId) {
+    public void setTicketId(String ticketId) {
         this.ticketId = ticketId;
     }
 }

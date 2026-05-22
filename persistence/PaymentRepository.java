@@ -11,9 +11,9 @@ public class PaymentRepository extends GenericJsonRepository<Payment> {
         super(FILE_PATH, Payment.class);
     }
 
-    public List<Payment> findByBookingId(int bookingId) {
+    public List<Payment> findByBookingId(String bookingId) {
         List<Payment> payments = findAll();
-        return payments.stream().filter(payment -> payment.getBookingId() == bookingId).collect(Collectors.toList());
+        return payments.stream().filter(payment -> bookingId.equals(payment.getBookingId())).collect(Collectors.toList());
     }
 
     public List<Payment> findByStatus(PaymentStatus status) {

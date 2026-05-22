@@ -1,35 +1,37 @@
 package domain;
 
 public class Event implements Identifiable {
-    private int id;
+    private String id;
     private String name;
     private String description;
-    private String date;
+    private String dateTime;     // maps to date_time in DB
     private String venue;
     private String category;
     private EventStatus status;
-    private int adminId;
+    private String adminId;      // FK → admins.admin_id
+    private String createdAt;
 
     public Event() {
     }
 
-    public Event(int id, String name, String description, String date, String venue,
-                 String category, EventStatus status, int adminId) {
+    public Event(String id, String name, String description, String dateTime, String venue,
+                 String category, EventStatus status, String adminId, String createdAt) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.date = date;
+        this.dateTime = dateTime;
         this.venue = venue;
         this.category = category;
         this.status = status;
         this.adminId = adminId;
+        this.createdAt = createdAt;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -42,7 +44,7 @@ public class Event implements Identifiable {
         this.name = name;
     }
 
-    
+
     public String getDescription() {
         return description;
     }
@@ -51,13 +53,13 @@ public class Event implements Identifiable {
         this.description = description;
     }
 
-    
-    public String getDate() {
-        return date;
+
+    public String getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 
 
@@ -69,7 +71,7 @@ public class Event implements Identifiable {
         this.venue = venue;
     }
 
-    
+
     public String getCategory() {
         return category;
     }
@@ -78,7 +80,7 @@ public class Event implements Identifiable {
         this.category = category;
     }
 
-    
+
     public EventStatus getStatus() {
         return status;
     }
@@ -88,11 +90,20 @@ public class Event implements Identifiable {
     }
 
 
-    public int getAdminId() {
+    public String getAdminId() {
         return adminId;
     }
 
-    public void setAdminId(int adminId) {
+    public void setAdminId(String adminId) {
         this.adminId = adminId;
+    }
+
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }
