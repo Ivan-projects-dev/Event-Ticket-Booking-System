@@ -1,0 +1,14 @@
+[
+  {
+    "bookingId": 1,
+    "ticketId": 1
+  },
+  {
+    "bookingId": 1,
+    "ticketId": 2
+  },
+  {
+    "bookingId": 1,
+    "ticketId": 3
+  }
+]

@@ -34,6 +34,7 @@ public class BookingRepository {
 
     public void save(Booking booking) {
         List<Booking> bookings = findAll();
+
         if (booking.getId() == 0) {
             booking.setId(generateNextId(bookings));
             bookings.add(booking);
@@ -48,7 +49,6 @@ public class BookingRepository {
                     break;
                 }
             }
-
             if (!updated) {
                 bookings.add(booking);
             }
