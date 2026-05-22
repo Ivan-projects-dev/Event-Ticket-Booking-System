@@ -2,26 +2,22 @@ package service;
 
 import domain.Booking;
 import domain.BookingStatus;
-import domain.BookingTicket;
 import domain.Notification;
 import domain.Payment;
+import domain.PaymentMethod;
 import domain.PaymentStatus;
 import persistence.BookingRepository;
-import persistence.BookingTicketRepository;
 import persistence.NotificationRepository;
 import persistence.PaymentRepository;
-import persistence.TicketRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class PaymentService {
     private final PaymentRepository paymentRepository = new PaymentRepository();
     private final BookingRepository bookingRepository = new BookingRepository();
-    private final BookingTicketRepository bookingTicketRepository = new BookingTicketRepository();
-    private final TicketRepository ticketRepository = new TicketRepository();
     private final NotificationRepository notificationRepository = new NotificationRepository();
 
-    public Payment pay(String bookingId, String method) {
+    public Payment pay(String bookingId, PaymentMethod method) {
         Booking booking = bookingRepository.findById(bookingId);
 
         if (booking == null) {
@@ -40,8 +36,6 @@ public class PaymentService {
 
         // Confirm the booking
         bookingRepository.updateStatus(bookingId, BookingStatus.CONFIRMED);
-
-        // Tickets are already marked unavailable at booking time — no further action needed
 
         // Notify the user
         String message = "Your booking " + booking.getConfirmationCode()

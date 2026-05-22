@@ -4,10 +4,12 @@ import domain.Booking;
 import domain.BookingStatus;
 import domain.BookingTicket;
 import domain.Ticket;
+import domain.TicketStatus;
 import persistence.BookingRepository;
 import persistence.BookingTicketRepository;
 import persistence.TicketRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookingService {
@@ -20,7 +22,10 @@ public class BookingService {
             throw new IllegalArgumentException("At least one ticket must be selected.");
         }
 
-        // Verify all tickets exist and are available
+        // Single pass: validate each ticket and accumulate total
+        List<Ticket> tickets = new ArrayList<>();
+        double total = 0;
+
         for (String ticketId : ticketIds) {
             Ticket ticket = ticketRepository.findById(ticketId);
 
@@ -28,15 +33,12 @@ public class BookingService {
                 throw new IllegalArgumentException("Ticket not found: " + ticketId);
             }
 
-            if (!ticket.isAvailability()) {
+            if (ticket.getStatus() != TicketStatus.AVAILABLE) {
                 throw new IllegalStateException("Ticket is not available: " + ticketId);
             }
-        }
 
-        // Calculate total amount
-        double total = 0;
-        for (String ticketId : ticketIds) {
-            total += ticketRepository.findById(ticketId).getPrice();
+            tickets.add(ticket);
+            total += ticket.getPrice();
         }
 
         // Create the booking
@@ -45,10 +47,10 @@ public class BookingService {
         Booking booking = new Booking(null, userId, now, total, BookingStatus.PENDING, confirmationCode, now);
         bookingRepository.save(booking);
 
-        // Link tickets to booking and mark them unavailable
-        for (String ticketId : ticketIds) {
-            bookingTicketRepository.save(new BookingTicket(booking.getId(), ticketId));
-            ticketRepository.setAvailability(ticketId, false);
+        // Link each ticket to the booking and mark it reserved
+        for (Ticket ticket : tickets) {
+            bookingTicketRepository.save(new BookingTicket(booking.getId(), ticket.getId()));
+            ticketRepository.setStatus(ticket.getId(), TicketStatus.RESERVED);
         }
 
         return booking;

@@ -1,6 +1,7 @@
 package service;
 
 import domain.Ticket;
+import domain.TicketStatus;
 import persistence.TicketRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +11,7 @@ public class TicketService {
 
     public Ticket createTicket(String eventId, String category, double price, String seatNumber) {
         String now = LocalDateTime.now().toString();
-        Ticket ticket = new Ticket(null, eventId, category, price, seatNumber, true, now);
+        Ticket ticket = new Ticket(null, eventId, category, price, seatNumber, TicketStatus.AVAILABLE, now);
         ticketRepository.save(ticket);
         return ticket;
     }
@@ -30,11 +31,11 @@ public class TicketService {
             throw new IllegalArgumentException("Ticket not found: " + ticketId);
         }
 
-        if (!ticket.isAvailability()) {
+        if (ticket.getStatus() != TicketStatus.AVAILABLE) {
             throw new IllegalStateException("Ticket is not available: " + ticketId);
         }
 
-        ticketRepository.setAvailability(ticketId, false);
+        ticketRepository.setStatus(ticketId, TicketStatus.RESERVED);
     }
 
     public void releaseTicket(String ticketId) {
@@ -44,7 +45,7 @@ public class TicketService {
             throw new IllegalArgumentException("Ticket not found: " + ticketId);
         }
 
-        ticketRepository.setAvailability(ticketId, true);
+        ticketRepository.setStatus(ticketId, TicketStatus.AVAILABLE);
     }
 
     public Ticket findById(String id) {

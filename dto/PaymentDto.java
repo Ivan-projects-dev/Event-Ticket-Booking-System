@@ -1,12 +1,14 @@
 package dto;
+
 import domain.Payment;
+import domain.PaymentMethod;
 import domain.PaymentStatus;
 
 public class PaymentDto {
     private String id;
     private String bookingId;
     private double amount;
-    private String method;
+    private PaymentMethod method;
     private String paymentDate;
     private PaymentStatus status;
     private String createdAt;
@@ -14,7 +16,8 @@ public class PaymentDto {
     public PaymentDto() {
     }
 
-    public PaymentDto(String id, String bookingId, double amount, String method, String paymentDate, PaymentStatus status, String createdAt) {
+    public PaymentDto(String id, String bookingId, double amount, PaymentMethod method,
+                      String paymentDate, PaymentStatus status, String createdAt) {
         this.id = id;
         this.bookingId = bookingId;
         this.amount = amount;
@@ -26,13 +29,13 @@ public class PaymentDto {
 
     public static PaymentDto from(Payment payment) {
         return new PaymentDto(
-            payment.getId(), 
-            payment.getBookingId(), 
-            payment.getAmount(), 
-            payment.getMethod(), 
-            payment.getPaymentDate(), 
-            payment.getStatus(), 
-            payment.getCreatedAt()
+                payment.getId(),
+                payment.getBookingId(),
+                payment.getAmount(),
+                payment.getMethod(),
+                payment.getPaymentDate(),
+                payment.getStatus(),
+                payment.getCreatedAt()
         );
     }
 
@@ -43,6 +46,7 @@ public class PaymentDto {
     public void setId(String id) {
         this.id = id;
     }
+
 
     public String getBookingId() {
         return bookingId;
@@ -62,11 +66,11 @@ public class PaymentDto {
     }
 
 
-    public String getMethod() {
+    public PaymentMethod getMethod() {
         return method;
     }
 
-    public void setMethod(String method) {
+    public void setMethod(PaymentMethod method) {
         this.method = method;
     }
 

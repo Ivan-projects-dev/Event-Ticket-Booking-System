@@ -6,20 +6,20 @@ public class Ticket implements Identifiable {
     private String category;
     private double price;
     private String seatNumber;
-    private boolean availability;
+    private TicketStatus status;
     private String createdAt;
 
     public Ticket() {
     }
 
     public Ticket(String id, String eventId, String category, double price,
-                  String seatNumber, boolean availability, String createdAt) {
+                  String seatNumber, TicketStatus status, String createdAt) {
         this.id = id;
         this.eventId = eventId;
         this.category = category;
         this.price = price;
         this.seatNumber = seatNumber;
-        this.availability = availability;
+        this.status = status;
         this.createdAt = createdAt;
     }
 
@@ -68,12 +68,12 @@ public class Ticket implements Identifiable {
     }
 
 
-    public boolean isAvailability() {
-        return availability;
+    public TicketStatus getStatus() {
+        return status;
     }
 
-    public void setAvailability(boolean availability) {
-        this.availability = availability;
+    public void setStatus(TicketStatus status) {
+        this.status = status;
     }
 
 

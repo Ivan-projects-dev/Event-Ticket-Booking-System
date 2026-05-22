@@ -4,7 +4,7 @@ public class Payment implements Identifiable {
     private String id;
     private String bookingId;    // FK → bookings.booking_id
     private double amount;
-    private String method;       // maps to method in DB (was paymentMethod)
+    private PaymentMethod method;
     private String paymentDate;
     private PaymentStatus status;
     private String createdAt;
@@ -12,7 +12,7 @@ public class Payment implements Identifiable {
     public Payment() {
     }
 
-    public Payment(String id, String bookingId, double amount, String method,
+    public Payment(String id, String bookingId, double amount, PaymentMethod method,
                    String paymentDate, PaymentStatus status, String createdAt) {
         this.id = id;
         this.bookingId = bookingId;
@@ -50,11 +50,11 @@ public class Payment implements Identifiable {
     }
 
 
-    public String getMethod() {
+    public PaymentMethod getMethod() {
         return method;
     }
 
-    public void setMethod(String method) {
+    public void setMethod(PaymentMethod method) {
         this.method = method;
     }
 

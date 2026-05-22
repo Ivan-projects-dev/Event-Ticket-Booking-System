@@ -1,27 +1,30 @@
 package dto;
+
 import domain.User;
+import domain.UserRole;
 
 public class UserDto {
     private String id;
     private String name;
     private String email;
-    private boolean admin;
+    private UserRole role;
     private String createdAt;
 
     public UserDto() {
     }
 
-    public UserDto(String id, String name, String email, boolean admin, String createdAt) {
+    public UserDto(String id, String name, String email, UserRole role, String createdAt) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.admin = admin;
+        this.role = role;
         this.createdAt = createdAt;
     }
 
     // Factory method: isAdmin computed by caller (from AdminRepository)
     public static UserDto from(User user, boolean isAdmin) {
-        return new UserDto(user.getId(), user.getName(), user.getEmail(), isAdmin, user.getCreatedAt());
+        return new UserDto(user.getId(), user.getName(), user.getEmail(),
+                isAdmin ? UserRole.ADMIN : UserRole.USER, user.getCreatedAt());
     }
 
     public String getId() {
@@ -50,13 +53,15 @@ public class UserDto {
         this.email = email;
     }
 
-    public boolean isAdmin() {
-        return admin;
+
+    public UserRole getRole() {
+        return role;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setRole(UserRole role) {
+        this.role = role;
     }
+
 
     public String getCreatedAt() {
         return createdAt;
