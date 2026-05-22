@@ -1,6 +1,6 @@
 package domain;
 
-public class Notification {
+public class Notification implements Identifiable {
     private int id;
     private int userId;
     private int bookingId;

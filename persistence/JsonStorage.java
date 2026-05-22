@@ -20,11 +20,9 @@ public class JsonStorage {
                 createEmptyJsonFile(file);
                 return new ArrayList<>();
             }
-
             if (file.length() == 0) {
                 return new ArrayList<>();
             }
-
             FileReader reader = new FileReader(file);
             Type listType = TypeToken.getParameterized(List.class, clazz).getType();
             List<T> items = gson.fromJson(reader, listType);
@@ -33,7 +31,6 @@ public class JsonStorage {
             if (items == null) {
                 return new ArrayList<>();
             }
-
             return items;
         } 
         catch (Exception e) {
@@ -50,7 +47,6 @@ public class JsonStorage {
             if (parent != null && !parent.exists()) {
                 parent.mkdirs();
             }
-
             FileWriter writer = new FileWriter(file);
             gson.toJson(items, writer);
             writer.close();
@@ -67,7 +63,6 @@ public class JsonStorage {
         if (parent != null && !parent.exists()) {
             parent.mkdirs();
         }
-
         FileWriter writer = new FileWriter(file);
         writer.write("[]");
         writer.close();

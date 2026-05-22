@@ -1,16 +1,34 @@
 package domain;
 
-public class BookingTicket {
+public class Payment implements Identifiable {
+    private int id;
     private int bookingId;
-    private int ticketId;
+    private double amount;
+    private PaymentMethod paymentMethod;
+    private String paymentDate;
+    private PaymentStatus status;
 
-    public BookingTicket() {
+    public Payment() {
     }
 
-    public BookingTicket(int bookingId, int ticketId) {
+    public Payment(int id, int bookingId, double amount, PaymentMethod paymentMethod,
+                   String paymentDate, PaymentStatus status) {
+        this.id = id;
         this.bookingId = bookingId;
-        this.ticketId = ticketId;
+        this.amount = amount;
+        this.paymentMethod = paymentMethod;
+        this.paymentDate = paymentDate;
+        this.status = status;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public int getBookingId() {
         return bookingId;
@@ -21,11 +39,38 @@ public class BookingTicket {
     }
 
 
-    public int getTicketId() {
-        return ticketId;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setTicketId(int ticketId) {
-        this.ticketId = ticketId;
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+
+    public String getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(String paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+
+    public PaymentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
     }
 }

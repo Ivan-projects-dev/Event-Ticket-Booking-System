@@ -1,6 +1,6 @@
 package domain;
 
-public class Booking {
+public class Booking implements Identifiable {
     private int id;
     private int userId;
     private String bookingDate;

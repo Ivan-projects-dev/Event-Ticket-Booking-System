@@ -1,6 +1,6 @@
 package domain;
 
-public class Ticket {
+public class Ticket implements Identifiable {
     private int id;
     private int eventId;
     private String category;

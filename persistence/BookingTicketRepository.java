@@ -1,85 +1,54 @@
 package persistence;
-import domain.Booking;
-import domain.BookingStatus;
+import domain.BookingTicket;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BookingRepository {
-    private static final String FILE_PATH = "data/bookings.json";
+public class BookingTicketRepository {
+    private static final String FILE_PATH = "data/booking_tickets.json";
 
-    public List<Booking> findAll() {
-        return JsonStorage.readList(FILE_PATH, Booking.class);
+    public List<BookingTicket> findAll() {
+        return JsonStorage.readList(FILE_PATH, BookingTicket.class);
     }
 
-    public Booking findById(int id) {
-        List<Booking> bookings = findAll();
+    public List<BookingTicket> findByBookingId(int bookingId) {
+        List<BookingTicket> records = findAll();
+        return records.stream().filter(bt -> bt.getBookingId() == bookingId).collect(Collectors.toList());
+    }
 
-        for (Booking booking : bookings) {
-            if (booking.getId() == id) {
-                return booking;
+    public List<BookingTicket> findByTicketId(int ticketId) {
+        List<BookingTicket> records = findAll();
+        return records.stream().filter(bt -> bt.getTicketId() == ticketId).collect(Collectors.toList());
+    }
+
+    public boolean exists(int bookingId, int ticketId) {
+        List<BookingTicket> records = findAll();
+
+        for (BookingTicket bt : records) {
+            if (bt.getBookingId() == bookingId && bt.getTicketId() == ticketId) {
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
-    public List<Booking> findByUserId(int userId) {
-        List<Booking> bookings = findAll();
-        return bookings.stream().filter(booking -> booking.getUserId() == userId).collect(Collectors.toList());
-    }
+    public void save(BookingTicket bookingTicket) {
+        List<BookingTicket> records = findAll();
 
-    public List<Booking> findByStatus(BookingStatus status) {
-        List<Booking> bookings = findAll();
-        return bookings.stream().filter(booking -> booking.getStatus() == status).collect(Collectors.toList());
-    }
-
-    public void save(Booking booking) {
-        List<Booking> bookings = findAll();
-
-        if (booking.getId() == 0) {
-            booking.setId(generateNextId(bookings));
-            bookings.add(booking);
-        } 
-        else {
-            boolean updated = false;
-
-            for (int i = 0; i < bookings.size(); i++) {
-                if (bookings.get(i).getId() == booking.getId()) {
-                    bookings.set(i, booking);
-                    updated = true;
-                    break;
-                }
-            }
-            if (!updated) {
-                bookings.add(booking);
-            }
+        if (!exists(bookingTicket.getBookingId(), bookingTicket.getTicketId())) {
+            records.add(bookingTicket);
+            JsonStorage.writeList(FILE_PATH, records);
         }
-        JsonStorage.writeList(FILE_PATH, bookings);
     }
 
-    public void updateStatus(int bookingId, BookingStatus status) {
-        Booking booking = findById(bookingId);
-
-        if (booking == null) {
-            return;
-        }
-        booking.setStatus(status);
-        save(booking);
+    public void deleteByBookingId(int bookingId) {
+        List<BookingTicket> records = findAll();
+        records.removeIf(bt -> bt.getBookingId() == bookingId);
+        JsonStorage.writeList(FILE_PATH, records);
     }
 
-    public void deleteById(int id) {
-        List<Booking> bookings = findAll();
-        bookings.removeIf(booking -> booking.getId() == id);
-        JsonStorage.writeList(FILE_PATH, bookings);
-    }
-
-    private int generateNextId(List<Booking> bookings) {
-        int maxId = 0;
-
-        for (Booking booking : bookings) {
-            if (booking.getId() > maxId) {
-                maxId = booking.getId();
-            }
-        }
-        return maxId + 1;
+    public void deleteByTicketId(int ticketId) {
+        List<BookingTicket> records = findAll();
+        records.removeIf(bt -> bt.getTicketId() == ticketId);
+        JsonStorage.writeList(FILE_PATH, records);
     }
 }

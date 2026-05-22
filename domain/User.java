@@ -1,6 +1,6 @@
 package domain;
 
-public class User {
+public class User implements Identifiable {
     private int id;
     private String email;
     private String password;

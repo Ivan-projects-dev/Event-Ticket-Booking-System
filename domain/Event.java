@@ -1,6 +1,6 @@
 package domain;
 
-public class Event {
+public class Event implements Identifiable {
     private int id;
     private String name;
     private String description;
