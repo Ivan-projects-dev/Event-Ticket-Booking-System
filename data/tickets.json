@@ -1,0 +1,10 @@
+[
+  {
+    "id": 1,
+    "eventId": 1,
+    "category": "Standard",
+    "price": 25.0,
+    "seatNumber": "A1",
+    "status": "AVAILABLE"
+  }
+]

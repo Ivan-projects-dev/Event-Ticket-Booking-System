@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "Rock Concert",
+    "description": "Live concert in Riga",
+    "date": "2026-06-10",
+    "venue": "Arena Riga",
+    "category": "Music",
+    "status": "ACTIVE",
+    "adminId": 1
+  }
+]
