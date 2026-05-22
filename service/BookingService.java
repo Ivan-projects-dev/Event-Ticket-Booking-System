@@ -3,10 +3,12 @@ package service;
 import domain.Booking;
 import domain.BookingStatus;
 import domain.BookingTicket;
+import domain.Notification;
 import domain.Ticket;
 import domain.TicketStatus;
 import persistence.BookingRepository;
 import persistence.BookingTicketRepository;
+import persistence.NotificationRepository;
 import persistence.TicketRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ public class BookingService {
     private final BookingRepository bookingRepository = new BookingRepository();
     private final BookingTicketRepository bookingTicketRepository = new BookingTicketRepository();
     private final TicketRepository ticketRepository = new TicketRepository();
+    private final NotificationRepository notificationRepository = new NotificationRepository();
 
     public Booking createBooking(String userId, List<String> ticketIds) {
         if (ticketIds == null || ticketIds.isEmpty()) {
@@ -53,6 +56,37 @@ public class BookingService {
             ticketRepository.setStatus(ticket.getId(), TicketStatus.RESERVED);
         }
 
+        return booking;
+    }
+
+    public Booking cancelBooking(String bookingId) {
+        Booking booking = bookingRepository.findById(bookingId);
+
+        if (booking == null) {
+            throw new IllegalArgumentException("Booking not found: " + bookingId);
+        }
+
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new IllegalStateException("Booking is already cancelled.");
+        }
+
+        // Cancel the booking
+        bookingRepository.updateStatus(bookingId, BookingStatus.CANCELLED);
+
+        // Restore each linked ticket to AVAILABLE
+        List<BookingTicket> links = bookingTicketRepository.findByBookingId(bookingId);
+        for (BookingTicket link : links) {
+            ticketRepository.setStatus(link.getTicketId(), TicketStatus.AVAILABLE);
+        }
+
+        // Notify the user
+        String now = LocalDateTime.now().toString();
+        String message = "Your booking " + booking.getConfirmationCode() + " has been cancelled.";
+        Notification notification = new Notification(null, booking.getUserId(), bookingId,
+                "BOOKING_CANCELLED", message, now, now);
+        notificationRepository.save(notification);
+
+        booking.setStatus(BookingStatus.CANCELLED);
         return booking;
     }
 

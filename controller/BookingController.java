@@ -15,6 +15,10 @@ public class BookingController {
         return bookingService.findById(id);
     }
 
+    public Booking cancelBooking(String bookingId) {
+        return bookingService.cancelBooking(bookingId);
+    }
+
     public List<Booking> getBookingsByUser(String userId) {
         return bookingService.findByUserId(userId);
     }
