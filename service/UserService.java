@@ -1,9 +1,9 @@
 package service;
-
 import domain.Admin;
 import domain.User;
 import persistence.AdminRepository;
 import persistence.UserRepository;
+import util.PasswordUtil;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,9 +15,8 @@ public class UserService {
         if (userRepository.findByEmail(email) != null) {
             throw new IllegalArgumentException("Email already in use: " + email);
         }
-
         String now = LocalDateTime.now().toString();
-        User user = new User(null, email, password, name, now);
+        User user = new User(null, email, PasswordUtil.hash(password), name, now);
         userRepository.save(user);
         return user;
     }
@@ -26,15 +25,12 @@ public class UserService {
         if (userRepository.findByEmail(email) != null) {
             throw new IllegalArgumentException("Email already in use: " + email);
         }
-
         String now = LocalDateTime.now().toString();
-        User user = new User(null, email, password, name, now);
+        User user = new User(null, email, PasswordUtil.hash(password), name, now);
         userRepository.save(user);
-
         // Create a corresponding Admin record
         Admin admin = new Admin(null, user.getId(), now);
         adminRepository.save(admin);
-
         return user;
     }
 
