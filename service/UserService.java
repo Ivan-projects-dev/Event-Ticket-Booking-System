@@ -42,6 +42,22 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public void changePassword(String userId, String oldPassword, String newPassword) {
+        User user = userRepository.findById(userId);
+
+        if (user == null) {
+            throw new IllegalArgumentException("User not found: " + userId);
+        }
+        if (!PasswordUtil.verify(oldPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect.");
+        }
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("New password must not be empty.");
+        }
+        user.setPassword(PasswordUtil.hash(newPassword));
+        userRepository.save(user);
+    }
+
     public boolean isAdmin(String userId) {
         return adminRepository.isAdmin(userId);
     }

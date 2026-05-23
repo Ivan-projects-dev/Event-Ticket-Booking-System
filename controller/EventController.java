@@ -22,6 +22,14 @@ public class EventController {
         return eventService.findByCategory(category).stream().map(EventResponse::from).collect(Collectors.toList());
     }
 
+    public List<EventResponse> searchByKeyword(String keyword) {
+        return eventService.searchByKeyword(keyword).stream().map(EventResponse::from).collect(Collectors.toList());
+    }
+
+    public List<EventResponse> listByDateRange(String from, String to) {
+        return eventService.findByDateRange(from, to).stream().map(EventResponse::from).collect(Collectors.toList());
+    }
+
     public EventResponse getEventById(String id) {
         Event event = eventService.findById(id);
 
@@ -29,6 +37,16 @@ public class EventController {
             return null;
         }
         return EventResponse.from(event);
+    }
+
+    public EventResponse updateEvent(String eventId, String name, String description,
+                                     String dateTime, String venue, String category) {
+        Event event = eventService.updateEvent(eventId, name, description, dateTime, venue, category);
+        return EventResponse.from(event);
+    }
+
+    public void publishEvent(String eventId) {
+        eventService.publishEvent(eventId);
     }
 
     public void cancelEvent(String eventId) {

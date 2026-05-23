@@ -20,7 +20,6 @@ public class UserController {
 
     public UserDto getUserById(String id) {
         User user = userService.findById(id);
-
         if (user == null) {
             return null;
         }
@@ -29,5 +28,9 @@ public class UserController {
 
     public List<UserDto> getAllUsers() {
         return userService.findAll().stream().map(u -> UserDto.from(u, userService.isAdmin(u.getId()))).collect(Collectors.toList());
+    }
+
+    public void changePassword(String userId, String oldPassword, String newPassword) {
+        userService.changePassword(userId, oldPassword, newPassword);
     }
 }

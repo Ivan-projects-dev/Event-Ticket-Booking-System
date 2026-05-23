@@ -21,6 +21,10 @@ public class BookingRepository extends GenericJsonRepository<Booking> {
         return bookings.stream().filter(booking -> booking.getStatus() == status).collect(Collectors.toList());
     }
 
+    public Booking findByConfirmationCode(String code) {
+        return findAll().stream().filter(b -> code.equals(b.getConfirmationCode())).findFirst().orElse(null);
+    }
+
     public void updateStatus(String bookingId, BookingStatus status) {
         Booking booking = findById(bookingId);
 

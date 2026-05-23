@@ -1,5 +1,4 @@
 package controller;
-
 import domain.Booking;
 import service.BookingService;
 import java.util.List;
@@ -21,5 +20,9 @@ public class BookingController {
 
     public List<Booking> getBookingsByUser(String userId) {
         return bookingService.findByUserId(userId);
+    }
+
+    public Booking getBookingByConfirmationCode(String code) {
+        return bookingService.findByConfirmationCode(code);
     }
 }
