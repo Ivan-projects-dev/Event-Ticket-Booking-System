@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Ticket Booking</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+<div class="nav-drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="nav-drawer" id="nav-drawer">
+  <button class="nav-drawer-close" onclick="closeDrawer()">✕</button>
+  <button onclick="closeDrawer();goBookings()" id="drawer-bookings" style="display:none">My Bookings</button>
+  <button onclick="closeDrawer();goAdmin()"    id="drawer-admin"    style="display:none">Admin</button>
+  <button onclick="closeDrawer();openModal()"  id="drawer-auth">Login / Register</button>
+  <button onclick="closeDrawer();logout()"     id="drawer-logout"   style="display:none">Logout</button>
+</div>
+
+<header>
+  <div class="header-left">
+    <button class="hamburger" onclick="openDrawer()">☰</button>
+    <h1 onclick="goHome()">🎟 Event Ticket Booking</h1>
+    <nav class="nav-links">
+      <button class="btn-ghost btn-sm" id="nav-bookings" style="display:none" onclick="goBookings()">My Bookings</button>
+      <button class="btn-ghost btn-sm" id="nav-admin"    style="display:none" onclick="goAdmin()">Admin</button>
+    </nav>
+  </div>
+  <div class="header-right">
+    <span id="greeting"></span>
+    <div class="notif-wrap" id="notif-wrap" style="display:none">
+      <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">🔔
+        <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+      </button>
+      <div class="notif-dropdown" id="notif-dropdown" style="display:none">
+        <div class="notif-header"><span>Notifications</span><button class="btn-secondary btn-sm" onclick="markAllRead()">Mark read</button></div>
+        <div class="notif-list" id="notif-list"></div>
+      </div>
+    </div>
+    <button class="btn-ghost btn-sm" id="settings-btn" style="display:none" onclick="openSettingsModal()">⚙</button>
+    <button class="btn-ghost btn-sm" id="auth-btn"   onclick="openModal()">Login / Register</button>
+    <button class="btn-ghost btn-sm" id="logout-btn" style="display:none" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<div id="toast-container"></div>
+<div id="error-banner">
+  <div class="error-banner-inner">
+    <span class="error-banner-icon">⚠️</span>
+    <div class="error-banner-body">
+      <span class="error-banner-title" id="error-banner-title">Error</span>
+      <span class="error-banner-detail" id="error-banner-msg"></span>
+    </div>
+    <button class="error-banner-close" onclick="hideErrorBanner()">✕</button>
+  </div>
+</div>
+<div id="confirm-overlay">
+  <div id="confirm-box">
+    <p id="confirm-msg"></p>
+    <div class="confirm-btns">
+      <button class="btn-secondary" onclick="resolveConfirm(false)">No</button>
+      <button class="btn-danger"    onclick="resolveConfirm(true)">Yes</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="modal-overlay" onclick="closeModalOnOutside(event)">
+  <div class="modal">
+    <h2>Welcome</h2>
+    <div class="tabs">
+      <button class="tab active" id="tab-login"    onclick="switchTab('login')">Login</button>
+      <button class="tab"        id="tab-register" onclick="switchTab('register')">Register</button>
+    </div>
+    <div id="form-login">
+      <div class="modal-fields">
+        <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com" /></div>
+        <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')submitAuth()" /></div>
+        <div class="error-msg" id="login-error"></div>
+      </div>
+    </div>
+    <div id="form-register" style="display:none">
+      <div class="modal-fields">
+        <div class="form-group"><label>Name</label><input type="text" id="reg-name" placeholder="Your name" /></div>
+        <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="you@example.com" /></div>
+        <div class="form-group"><label>Password</label><input type="password" id="reg-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')submitAuth()" /></div>
+        <div class="error-msg" id="reg-error"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" id="modal-submit" onclick="submitAuth()">Login</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="settings-overlay" onclick="closeSettingsOnOutside(event)">
+  <div class="modal">
+    <h2>Change Password</h2>
+    <div class="modal-fields">
+      <div class="form-group"><label>Current password</label><input type="password" id="pw-old" placeholder="••••••••" /></div>
+      <div class="form-group"><label>New password</label><input type="password" id="pw-new" placeholder="••••••••" /></div>
+      <div class="form-group"><label>Confirm new password</label><input type="password" id="pw-confirm" placeholder="••••••••" /></div>
+      <div class="error-msg" id="pw-error"></div>
+      <div class="error-msg" style="color:#166534" id="pw-ok"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeSettingsModal()">Close</button>
+      <button class="btn-primary"   onclick="submitPasswordChange()">Update</button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search events…" oninput="onSearch()" />
+    <button class="btn-primary" onclick="clearFilters()">Browse All</button>
+  </div>
+  <div class="filter-bar">
+    <div>
+      <label>Category</label>
+      <select id="filter-category" onchange="applyFilters()">
+        <option value="">All categories</option>
+        <option>Concert</option><option>Sports</option><option>Theatre</option>
+        <option>Conference</option><option>Festival</option><option>Other</option>
+      </select>
+    </div>
+    <div><label>From</label><input type="date" id="filter-from" onchange="applyFilters()" /></div>
+    <div><label>To</label>  <input type="date" id="filter-to"   onchange="applyFilters()" /></div>
+  </div>
+  <div class="section-label" id="section-label">Upcoming Events</div>
+  <div class="events-grid" id="events-grid"></div>
+  <div class="empty-state" id="empty-msg" style="display:none">
+    <div style="font-size:2rem">🎭</div><p>No events found.</p>
+  </div>
+  <div class="pagination" id="pagination-bar" style="display:none">
+    <button class="btn-secondary btn-sm" id="page-prev" onclick="changePage(-1)">← Prev</button>
+    <span id="page-info" style="font-size:.85rem;color:#666"></span>
+    <button class="btn-secondary btn-sm" id="page-next" onclick="changePage(1)">Next →</button>
+  </div>
+</main>
+
+<script src="js/shared.js"></script>
+<script>
+'use strict';
+
+let currentPage = 0;
+const PAGE_SIZE = 12;
+let searchTimer;
+
+async function loadEvents(query, page) {
+  if (page === undefined) page = 0;
+  currentPage = page;
+  if (!query) document.getElementById('search-input').value = '';
+  const url = query
+    ? API + '/events?q=' + encodeURIComponent(query)
+    : API + '/events?page=' + page + '&size=' + PAGE_SIZE;
+  document.getElementById('events-grid').innerHTML = '<div class="loading">Loading events…</div>';
+  document.getElementById('empty-msg').style.display = 'none';
+  try {
+    const res  = await fetch(url);
+    const data = await res.json();
+    renderEvents(Array.isArray(data) ? data : [], !query);
+  } catch {
+    document.getElementById('events-grid').innerHTML =
+      '<div class="alert alert-error" style="margin-top:1rem">Could not connect to server.</div>';
+  }
+}
+
+function onSearch() {
+  clearTimeout(searchTimer);
+  const q = document.getElementById('search-input').value.trim();
+  if (!q) { loadEvents(); return; }
+  searchTimer = setTimeout(() => {
+    document.getElementById('section-label').textContent = 'Results for "' + sanitize(q) + '"';
+    loadEvents(q);
+  }, 300);
+}
+
+function renderEvents(events, paginated) {
+  const grid  = document.getElementById('events-grid');
+  const empty = document.getElementById('empty-msg');
+  const pbar  = document.getElementById('pagination-bar');
+  grid.innerHTML = '';
+  if (!events || events.length === 0) {
+    empty.style.display = 'block';
+    if (pbar) pbar.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  if (pbar) {
+    pbar.style.display = paginated ? 'flex' : 'none';
+    document.getElementById('page-info').textContent = 'Page ' + (currentPage + 1);
+    document.getElementById('page-prev').disabled    = currentPage === 0;
+    document.getElementById('page-next').disabled    = events.length < PAGE_SIZE;
+  }
+  events.forEach(e => {
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    card.innerHTML =
+      '<span class="badge badge-category">' + sanitize(e.category || 'General') + '</span>' +
+      '<div class="card-title">' + sanitize(e.name || 'Untitled') + '</div>' +
+      '<div class="meta"><span>📅 ' + formatDate(e.dateTime) + '</span><span>📍 ' + sanitize(e.venue || '—') + '</span></div>' +
+      '<p class="card-desc">' + sanitize(e.description || '') + '</p>' +
+      '<div class="card-footer">' +
+        '<span class="ticket-count" id="tc-' + sanitize(e.id || '') + '">— tickets</span>' +
+        '<button class="btn-outline btn-sm">View details</button>' +
+      '</div>';
+    card.querySelector('button').addEventListener('click', () => goEvent(e.id));
+    grid.appendChild(card);
+    if (e.id) loadTicketCount(e.id);
+  });
+}
+
+async function loadTicketCount(eventId) {
+  try {
+    const res  = await fetch(API + '/events/' + encodeURIComponent(eventId) + '/tickets');
+    if (!res.ok) return;
+    const tickets = await res.json();
+    const el = document.getElementById('tc-' + eventId);
+    if (!el) return;
+    const count = Array.isArray(tickets) ? tickets.length : 0;
+    el.textContent = count + ' ticket' + (count !== 1 ? 's' : '') + ' left';
+    el.className = 'ticket-count' + (count > 0 && count <= 5 ? ' low' : '');
+  } catch {}
+}
+
+function changePage(delta) {
+  const next = currentPage + delta;
+  if (next < 0) return;
+  loadEvents(undefined, next);
+}
+
+function applyFilters() {
+  const q        = document.getElementById('search-input').value.trim();
+  const category = document.getElementById('filter-category').value;
+  const from     = document.getElementById('filter-from').value;
+  const to       = document.getElementById('filter-to').value;
+  if (q)           { loadEvents(q); return; }
+  if (category)    { document.getElementById('section-label').textContent = 'Category: ' + sanitize(category); fetchAndRender(API + '/events?category=' + encodeURIComponent(category)); return; }
+  if (from && to)  { document.getElementById('section-label').textContent = from + ' → ' + to; fetchAndRender(API + '/events?from=' + encodeURIComponent(from + 'T00:00') + '&to=' + encodeURIComponent(to + 'T23:59')); return; }
+  loadEvents();
+}
+
+async function fetchAndRender(url) {
+  document.getElementById('events-grid').innerHTML = '<div class="loading">Loading…</div>';
+  document.getElementById('empty-msg').style.display = 'none';
+  try {
+    const res  = await fetch(url);
+    const data = await res.json();
+    renderEvents(Array.isArray(data) ? data : [], false);
+  } catch {
+    document.getElementById('events-grid').innerHTML = '<div class="alert alert-error" style="margin-top:1rem">Could not connect.</div>';
+  }
+}
+
+function clearFilters() {
+  ['search-input','filter-category','filter-from','filter-to'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('section-label').textContent = 'Upcoming Events';
+  loadEvents();
+}
+
+initPage();
+loadEvents();
+</script>
+</body>
+</html>
