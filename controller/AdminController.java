@@ -1,11 +1,8 @@
 package controller;
-import domain.BookingTicket;
 import domain.Event;
 import domain.Payment;
 import domain.Ticket;
 import domain.TicketStatus;
-import domain.User;
-import dto.EventResponse;
 import dto.SalesSummary;
 import dto.UserDto;
 import persistence.AdminRepository;
@@ -33,13 +30,12 @@ public class AdminController {
         return userService.findAll().stream().filter(u -> adminRepository.isAdmin(u.getId())).map(u -> UserDto.from(u, true)).collect(Collectors.toList());
     }
 
-    public List<EventResponse> getAllEvents() {
-        return eventService.findAll().stream().map(EventResponse::from).collect(Collectors.toList());
+    public List<Event> getAllEvents() {
+        return eventService.findAll();
     }
 
-    public EventResponse createEvent(String name, String description, String dateTime, String venue, String category, String adminId) {
-        Event event = eventService.createEvent(name, description, dateTime, venue, category, adminId);
-        return EventResponse.from(event);
+    public Event createEvent(String name, String description, String dateTime, String venue, String category, String adminId) {
+        return eventService.createEvent(name, description, dateTime, venue, category, adminId);
     }
 
     public void cancelEvent(String eventId) {
